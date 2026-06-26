@@ -1,6 +1,6 @@
 -- ============================================================================
 -- TRABALHO FINAL - BANCO DE DADOS II
--- INTEGRANTES: Luccas Rafael (e grupo)
+-- INTEGRANTES: HENRIQUE CANDIDO ISHIZAKA 
 -- DOMÍNIO: EventHub (Plataforma de Gestão de Eventos e Ingressos)
 -- ============================================================================
 
@@ -218,7 +218,7 @@ INSERT INTO avaliacao (nota, comentario, data_avaliacao, id_usuario, id_evento) 
 (3, 'Faltou ponto de hidratação na metade da corrida.', '2026-10-05', 2, 4),
 (4, 'Comida maravilhosa, os preços estavam um pouco salgados.', '2026-11-13', 4, 5);
 -- ----------------------------------------------------------------------------
--- 3. MANIPULAÇÃO DE SCHEMA E DADOS (1,0 pt)
+-- 3. MANIPULAÇÃO DE SCHEMA E DADOS 
 -- ----------------------------------------------------------------------------
 
 -- Alteração 1: ADD COLUMN
@@ -264,7 +264,7 @@ WHERE status = 'pendente'
       WHERE data_compra < CURRENT_TIMESTAMP - INTERVAL '3 days'
   );
   -- ----------------------------------------------------------------------------
--- 4. CONSULTAS COM PROPÓSITO (3,5 pts)
+-- 4. CONSULTAS COM PROPÓSITO 
 -- ----------------------------------------------------------------------------
 
 -- ============================================================================
@@ -345,7 +345,7 @@ SELECT u.id_usuario, u.nome, u.email
 FROM usuario u
 JOIN compra c ON u.id_usuario = c.id_usuario;
 -- ----------------------------------------------------------------------------
--- 5. VIEWS (2,0 pts)
+-- 5. VIEWS 
 -- ----------------------------------------------------------------------------
 
 -- ============================================================================
@@ -431,7 +431,7 @@ GROUP BY e.id_evento, e.titulo;
 -- Teste da View 3
 SELECT * FROM v_feedback_eventos;
 -- ----------------------------------------------------------------------------
--- 6. PROGRAMAÇÃO NO SGBD (3,5 pts)
+-- 6. PROGRAMAÇÃO NO SGBD 
 -- ----------------------------------------------------------------------------
 
 -- ============================================================================
