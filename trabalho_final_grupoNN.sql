@@ -510,16 +510,16 @@ EXECUTE FUNCTION fn_atualiza_valor_total_compra();
 -- DEMONSTRAÇÃO DO FUNCIONAMENTO DAS TRIGGERS (Antes / Depois)
 -- ----------------------------------------------------------------------------
 
--- Visualizando estado inicial do estoque do ingresso ID 3 e da compra ID 2
+-- Visualizando estado inicial do estoque do ingresso ID 3 e da compra ID 3 (CORRIGIDO PARA EVITAR CONFLITO DE PK)
 SELECT id_ingresso, quantidade_disponivel FROM ingresso WHERE id_ingresso = 3;
-SELECT id_compra, valor_total FROM compra WHERE id_compra = 2;
+SELECT id_compra, valor_total FROM compra WHERE id_compra = 3;
 
 -- Teste 1: Inserindo uma compra válida (Dispara trg_valida_estoque e trg_atualiza_valor_total)
-INSERT INTO compra_ingresso (id_compra, id_ingresso, quantidade) VALUES (2, 3, 5);
+INSERT INTO compra_ingresso (id_compra, id_ingresso, quantidade) VALUES (3, 3, 5);
 
 -- Verificando efeito da inserção bem-sucedida (Estoque diminuiu e valor_total subiu)
 SELECT id_ingresso, quantidade_disponivel FROM ingresso WHERE id_ingresso = 3;
-SELECT id_compra, valor_total FROM compra WHERE id_compra = 2;
+SELECT id_compra, valor_total FROM compra WHERE id_compra = 3;
 
 -- Teste 2: Forçando estouro de estoque (Deve disparar o RAISE EXCEPTION da Trigger BEFORE)
 -- O ingresso ID 3 agora tem 295 unidades disponíveis. Vamos tentar comprar 400.
@@ -527,7 +527,8 @@ SELECT id_compra, valor_total FROM compra WHERE id_compra = 2;
 DO $$
 BEGIN
     BEGIN
-        INSERT INTO compra_ingresso (id_compra, id_ingresso, quantidade) VALUES (2, 3, 400);
+        -- Corrigido para compra 3 aqui também
+        INSERT INTO compra_ingresso (id_compra, id_ingresso, quantidade) VALUES (3, 3, 400);
     EXCEPTION WHEN OTHERS THEN
         RAISE NOTICE 'Capturado erro esperado de validação: %', SQLERRM;
     END;
@@ -594,12 +595,23 @@ SELECT id_ingresso, tipo, preco FROM ingresso WHERE id_evento = 1;
 -- Regra: Demonstrar o controle transacional explícito. O script deve abrir uma
 -- transação, realizar comandos DML e forçar um ROLLBACK simulando um erro/desistência.
 -- ============================================================================
+-- ============================================================================
+-- 6.3. TRANSAÇÃO COM ROLLBACK (ATOMICIDADE E CONCORRÊNCIA)
+-- Regra: Demonstrar o controle transacional explícito. O script deve abrir uma
+-- transação, realizar comandos DML e forçar um ROLLBACK simulando um erro/desistência.
+-- ============================================================================
+
+-- SALVAMENTO DE SEGURANÇA: Garante que a criação das tabelas e inserts não sejam apagados
+COMMIT; 
 
 -- Passo 1: Verificar o estado atual de um usuário e suas compras antes do bloco
 SELECT id_compra, valor_total FROM compra WHERE id_usuario = 5;
 
 -- Passo 2: Início do bloco transacional explícito
 BEGIN;
+
+    -- Insere uma nova intenção de compra
+-- ... (o resto do código dele continua exatamente igual)
 
     -- Insere uma nova intenção de compra
     INSERT INTO compra (id_compra, data_compra, valor_total, id_usuario)
